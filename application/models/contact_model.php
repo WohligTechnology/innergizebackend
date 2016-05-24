@@ -63,6 +63,16 @@ public function contactSubmit($name, $company, $email, $phone,$website,$comments
 {
   if(!empty($email)){
     $query = $this->db->query("INSERT INTO `innergizebackend_contact`(`name`,`company`, `phone`, `email`, `website`, `comments`) VALUES ('$name','$company','$phone','$email','$website','$comments')");
+    $message = "<html><body><div id=':1fn' class='a3s adM' style='overflow: hidden;'>
+    <p style='color:#000;font-family:Roboto;font-size:14px'>Name : $name <br/>
+  Phone : $phone <br/>
+  Company : $company <br/>
+  Website : $website <br/>
+  Email : $email <br/>
+  Comment : $comments
+    </p>
+
+  </div></body></html>";
     if(!$query)
     {
       $obj = new stdClass();
@@ -70,6 +80,8 @@ public function contactSubmit($name, $company, $email, $phone,$website,$comments
     }
     else
     {
+
+    $this->email_model->emailer($message,'Contact Form Submission','vinodwohlig@gmail.com',$username);
       $obj = new stdClass();
       $obj->value= true;
     }
