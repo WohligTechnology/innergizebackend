@@ -59,17 +59,18 @@ $return[$row->id]=$row->name;
 }
 return $return;
 }
-public function contactSubmit($name, $company, $email, $phone,$website,$comments)
+public function contactSubmit($name, $company, $email, $phone,$website,$comments,$services)
 {
   if(!empty($email)){
-    $query = $this->db->query("INSERT INTO `innergizebackend_contact`(`name`,`company`, `phone`, `email`, `website`, `comments`) VALUES ('$name','$company','$phone','$email','$website','$comments')");
+    $query = $this->db->query("INSERT INTO `innergizebackend_contact`(`name`,`company`, `phone`, `email`, `website`, `comments`,`services`) VALUES ('$name','$company','$phone','$email','$website','$comments','$services')");
     $message = "<html><body><div id=':1fn' class='a3s adM' style='overflow: hidden;'>
     <p style='color:#000;font-family:Roboto;font-size:14px'>Name : $name <br/>
   Phone : $phone <br/>
   Company : $company <br/>
   Website : $website <br/>
   Email : $email <br/>
-  Comment : $comments
+  Comment : $comments <br/>
+  Services : $services
     </p>
 
   </div></body></html>";

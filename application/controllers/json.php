@@ -182,7 +182,8 @@ public function contactSubmit()
     $phone = $data['phone'];
     $website = $data['website'];
     $comments = $data['comments'];
-    $data['message'] = $this->contact_model->contactSubmit($name, $company, $email, $phone,$website,$comments);
+    $services = $data['services'];
+    $data['message'] = $this->contact_model->contactSubmit($name, $company, $email, $phone,$website,$comments,$services);
     $this->load->view('json', $data);
 
 }
