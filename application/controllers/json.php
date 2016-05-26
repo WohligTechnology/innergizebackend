@@ -172,7 +172,21 @@ public function careersSubmit()
 $this->load->view('json', $data);
     }
   }
-
+public function imageUpload()
+{
+  $config['upload_path'] = './uploads/';
+  $config['allowed_types'] = '*';
+  $this->load->library('upload', $config);
+  $filename = 'image';
+  $image = '';
+  if ($this->upload->do_upload($filename)) {
+      $uploaddata = $this->upload->data();
+      $image = $uploaddata['file_name'];
+      $config_r['source_pdf'] = './uploads/'.$uploaddata['file_name'];
+      $data['message']->name=$image;
+      $this->load->view('json', $data);
+  }
+}
 public function contactSubmit()
 {
     $data = json_decode(file_get_contents('php://input'), true);
