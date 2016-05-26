@@ -149,28 +149,39 @@ $this->load->view("json",$data);
 
 public function careersSubmit()
 {
-    $name = $this->input->get_post('name');
-    $department = $this->input->get_post('department');
-    $email = $this->input->get_post('email');
-    $phone = $this->input->get_post('phone');
-    $position = $this->input->get_post('position');
-    $qualification = $this->input->get_post('qualification');
-      // $url = $this->input->get_post('url');
-    $config['upload_path'] = './uploads/';
-    $config['allowed_types'] = '*';
-    $this->load->library('upload', $config);
-    $filename = 'resume';
-    $resume = '';
-    if ($this->upload->do_upload($filename)) {
-        $uploaddata = $this->upload->data();
-        $resume = $uploaddata['file_name'];
-        $config_r['source_pdf'] = './uploads/'.$uploaddata['file_name'];
+  $data = json_decode(file_get_contents('php://input'), true);
+  $name = $data['name'];
+  $department = $data['department'];
+  $email = $data['name'];
+  $phone = $data['phone'];
+  $position = $data['position'];
+  $qualification = $data['qualification'];
+  $resume = $data['resume'];
 
-        $data['message'] = $this->career_model->careersSubmit($name, $department, $email, $phone,$position,$qualification,$resume);
-        // $data['redirect'] = $url;
-        // $this->load->view('redirect3', $data);
+    // $name = $this->input->get_post('name');
+    // $department = $this->input->get_post('department');
+    // $email = $this->input->get_post('email');
+    // $phone = $this->input->get_post('phone');
+    // $position = $this->input->get_post('position');
+    // $qualification = $this->input->get_post('qualification');
+      // $url = $this->input->get_post('url');
+//     $config['upload_path'] = './uploads/';
+//     $config['allowed_types'] = '*';
+//     $this->load->library('upload', $config);
+//     $filename = 'resume';
+//     $resume = '';
+//     if ($this->upload->do_upload($filename)) {
+//         $uploaddata = $this->upload->data();
+//         $resume = $uploaddata['file_name'];
+//         $config_r['source_pdf'] = './uploads/'.$uploaddata['file_name'];
+//
+//         $data['message'] = $this->career_model->careersSubmit($name, $department, $email, $phone,$position,$qualification,$resume);
+//         // $data['redirect'] = $url;
+//         // $this->load->view('redirect3', $data);
+// $this->load->view('json', $data);
+//     }
+$data['message'] = $this->career_model->careersSubmit($name, $department, $email, $phone,$position,$qualification,$resume);
 $this->load->view('json', $data);
-    }
   }
 public function imageUpload()
 {
