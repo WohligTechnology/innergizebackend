@@ -884,5 +884,337 @@ $data["redirect"]="site/viewcareer";
 $this->load->view("redirect",$data);
 }
 
+public function viewdownload()
+{
+$access=array("1");
+$this->checkaccess($access);
+$data["page"]="viewdownload";
+$data["base_url"]=site_url("site/viewdownloadjson");
+$data["title"]="View download";
+$this->load->view("template",$data);
+}
+function viewdownloadjson()
+{
+$elements=array();
+$elements[0]=new stdClass();
+$elements[0]->field="`innergizebackend_download`.`id`";
+$elements[0]->sort="1";
+$elements[0]->header="id";
+$elements[0]->alias="id";
+$elements[1]=new stdClass();
+$elements[1]->field="`innergizebackend_download`.`name`";
+$elements[1]->sort="1";
+$elements[1]->header="name";
+$elements[1]->alias="name";
+// $elements[2]=new stdClass();
+// $elements[2]->field="`innergizebackend_download`.`category`";
+// $elements[2]->sort="1";
+// $elements[2]->header="category";
+// $elements[2]->alias="category";
+$elements[3]=new stdClass();
+$elements[3]->field="`innergizebackend_download`.`pdf`";
+$elements[3]->sort="1";
+$elements[3]->header="pdf";
+$elements[3]->alias="pdf";
+$elements[4]=new stdClass();
+$elements[4]->field="`innergizebackend_download`.`order`";
+$elements[4]->sort="1";
+$elements[4]->header="order";
+$elements[4]->alias="order";
+$elements[5]=new stdClass();
+$elements[5]->field="`innergizebackend_category`.`name`";
+$elements[5]->sort="1";
+$elements[5]->header="category";
+$elements[5]->alias="category";
+$search=$this->input->get_post("search");
+$pageno=$this->input->get_post("pageno");
+$orderby=$this->input->get_post("orderby");
+$orderorder=$this->input->get_post("orderorder");
+$maxrow=$this->input->get_post("maxrow");
+if($maxrow=="")
+{
+$maxrow=20;
+}
+if($orderby=="")
+{
+$orderby="id";
+$orderorder="ASC";
+}
+$data["message"]=$this->chintantable->query($pageno,$maxrow,$orderby,$orderorder,$search,$elements,"FROM `innergizebackend_download` LEFT OUTER JOIN `innergizebackend_category` ON `innergizebackend_download`.`category`=`innergizebackend_category`.`id`");
+$this->load->view("json",$data);
+}
+
+public function createdownload()
+{
+$access=array("1");
+$this->checkaccess($access);
+$data["page"]="createdownload";
+$data['category'] = $this->download_model->getdropdown();
+$data["title"]="Create download";
+$this->load->view("template",$data);
+}
+public function createdownloadsubmit()
+{
+$access=array("1");
+$this->checkaccess($access);
+$this->form_validation->set_rules("name","name","trim");
+if($this->form_validation->run()==FALSE)
+{
+$data["alerterror"]=validation_errors();
+$data["page"]="createdownload";
+$data["title"]="Create download";
+$this->load->view("template",$data);
+}
+else
+{
+$id=$this->input->get_post("id");
+$name=$this->input->get_post("name");
+$category=$this->input->get_post("category");
+$order=$this->input->get_post("order");
+$config['upload_path'] = './uploads/';
+$config['allowed_types'] = '*';
+$this->load->library('upload', $config);
+$filename="pdf";
+$pdf="";
+if (  $this->upload->do_upload($filename))
+{
+$uploaddata = $this->upload->data();
+$pdf=$uploaddata['file_name'];
+
+		$config_r['source_image']   = './uploads/' . $uploaddata['file_name'];
+		$config_r['maintain_ratio'] = TRUE;
+		$config_t['create_thumb'] = FALSE;///add this
+
+		//end of configs
+
+		$this->load->library('image_lib', $config_r);
+		$this->image_lib->initialize($config_r);
+		if(!$this->image_lib->resize())
+		{
+				echo "Failed." . $this->image_lib->display_errors();
+				//return false;
+		}
+		else
+		{
+				//print_r($this->image_lib->dest_image);
+				//dest_image
+				$pdf=$this->image_lib->dest_image;
+				//return false;
+		}
+
+}
+
+if($this->download_model->create($name,$category,$order,$pdf)==0)
+$data["alerterror"]="New download could not be created.";
+else
+$data["alertsuccess"]="download created Successfully.";
+$data["redirect"]="site/viewdownload";
+$this->load->view("redirect",$data);
+}
+}
+public function editdownload()
+{
+$access=array("1");
+$this->checkaccess($access);
+$data["page"]="editdownload";
+$data["title"]="Edit download";
+$data['category'] = $this->download_model->getdropdown();
+$data["before"]=$this->download_model->beforeedit($this->input->get("id"));
+$this->load->view("template",$data);
+}
+public function editdownloadsubmit()
+{
+$access=array("1");
+$this->checkaccess($access);
+$this->form_validation->set_rules("id","id","trim");
+$this->form_validation->set_rules("name","name","trim");
+
+if($this->form_validation->run()==FALSE)
+{
+$data["alerterror"]=validation_errors();
+$data["page"]="editdownload";
+$data["title"]="Edit download";
+$data["before"]=$this->download_model->beforeedit($this->input->get("id"));
+$this->load->view("template",$data);
+}
+else
+{
+$id=$this->input->get_post("id");
+$name=$this->input->get_post("name");
+$category=$this->input->get_post("category");
+$order=$this->input->get_post("order");
+$config['upload_path'] = './uploads/';
+			 $config['allowed_types'] = '*';
+			 $this->load->library('upload', $config);
+			 $filename="pdf";
+			 $pdf="";
+			 if (  $this->upload->do_upload($filename))
+			 {
+				 $uploaddata = $this->upload->data();
+				 $pdf=$uploaddata['file_name'];
+			 }
+
+			 if($pdf=="")
+			 {
+			 $pdf=$this->download_model->getpdfbyid($id);
+					// print_r($image);
+				 $pdf=$pdf->pdf;
+			 }
+if($this->download_model->edit($id,$name,$category,$order,$pdf)==0)
+$data["alerterror"]="New download could not be Updated.";
+else
+$data["alertsuccess"]="download Updated Successfully.";
+$data["redirect"]="site/viewdownload";
+$this->load->view("redirect",$data);
+}
+}
+public function deletedownload()
+{
+$access=array("1");
+$this->checkaccess($access);
+$this->download_model->delete($this->input->get("id"));
+$data["redirect"]="site/viewdownload";
+$this->load->view("redirect",$data);
+}
+public function viewcategory()
+{
+$access=array("1");
+$this->checkaccess($access);
+$data["page"]="viewcategory";
+$data["base_url"]=site_url("site/viewcategoryjson");
+$data["title"]="View category";
+$this->load->view("template",$data);
+}
+function viewcategoryjson()
+{
+$elements=array();
+$elements[0]=new stdClass();
+$elements[0]->field="`innergizebackend_category`.`id`";
+$elements[0]->sort="1";
+$elements[0]->header="id";
+$elements[0]->alias="id";
+$elements[1]=new stdClass();
+$elements[1]->field="`innergizebackend_category`.`name`";
+$elements[1]->sort="1";
+$elements[1]->header="name";
+$elements[1]->alias="name";
+// $elements[2]=new stdClass();
+// $elements[2]->field="`innergizebackend_category`.`category`";
+// $elements[2]->sort="1";
+// $elements[2]->header="category";
+// $elements[2]->alias="category";
+$elements[3]=new stdClass();
+$elements[3]->field="`innergizebackend_category`.`description`";
+$elements[3]->sort="1";
+$elements[3]->header="description";
+$elements[3]->alias="description";
+$elements[4]=new stdClass();
+$elements[4]->field="`innergizebackend_category`.`order`";
+$elements[4]->sort="1";
+$elements[4]->header="order";
+$elements[4]->alias="order";
+
+$search=$this->input->get_post("search");
+$pageno=$this->input->get_post("pageno");
+$orderby=$this->input->get_post("orderby");
+$orderorder=$this->input->get_post("orderorder");
+$maxrow=$this->input->get_post("maxrow");
+if($maxrow=="")
+{
+$maxrow=20;
+}
+if($orderby=="")
+{
+$orderby="id";
+$orderorder="ASC";
+}
+$data["message"]=$this->chintantable->query($pageno,$maxrow,$orderby,$orderorder,$search,$elements,"FROM `innergizebackend_category`");
+$this->load->view("json",$data);
+}
+
+public function createcategory()
+{
+$access=array("1");
+$this->checkaccess($access);
+$data["page"]="createcategory";
+// $data['category'] = $this->category_model->getdropdown();
+$data["title"]="Create category";
+$this->load->view("template",$data);
+}
+public function createcategorysubmit()
+{
+$access=array("1");
+$this->checkaccess($access);
+$this->form_validation->set_rules("name","name","trim");
+if($this->form_validation->run()==FALSE)
+{
+$data["alerterror"]=validation_errors();
+$data["page"]="createcategory";
+$data["title"]="Create category";
+$this->load->view("template",$data);
+}
+else
+{
+	$id=$this->input->get_post("id");
+	$name=$this->input->get_post("name");
+	$description=$this->input->get_post("description");
+	$order=$this->input->get_post("order");
+	if($this->category_model->create($name,$description,$order)==0)
+	$data["alerterror"]="New category could not be created.";
+else
+$data["alertsuccess"]="category created Successfully.";
+$data["redirect"]="site/viewcategory";
+$this->load->view("redirect",$data);
+}
+}
+public function editcategory()
+{
+$access=array("1");
+$this->checkaccess($access);
+$data["page"]="editcategory";
+$data["title"]="Edit category";
+// $data['category'] = $this->category_model->getdropdown();
+$data["before"]=$this->category_model->beforeedit($this->input->get("id"));
+$this->load->view("template",$data);
+}
+public function editcategorysubmit()
+{
+$access=array("1");
+$this->checkaccess($access);
+$this->form_validation->set_rules("id","id","trim");
+$this->form_validation->set_rules("name","name","trim");
+
+if($this->form_validation->run()==FALSE)
+{
+$data["alerterror"]=validation_errors();
+$data["page"]="editcategory";
+$data["title"]="Edit category";
+$data["before"]=$this->category_model->beforeedit($this->input->get("id"));
+$this->load->view("template",$data);
+}
+else
+{
+$id=$this->input->get_post("id");
+$name=$this->input->get_post("name");
+$description=$this->input->get_post("description");
+$order=$this->input->get_post("order");
+if($this->category_model->edit($id,$name,$description,$order)==0)
+$data["alerterror"]="New category could not be Updated.";
+else
+$data["alertsuccess"]="category Updated Successfully.";
+$data["redirect"]="site/viewcategory";
+$this->load->view("redirect",$data);
+}
+}
+public function deletecategory()
+{
+$access=array("1");
+$this->checkaccess($access);
+$this->category_model->delete($this->input->get("id"));
+$data["redirect"]="site/viewcategory";
+$this->load->view("redirect",$data);
+}
+
+
 }
 ?>
