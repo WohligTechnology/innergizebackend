@@ -51,6 +51,17 @@ $return[$row->id]=$row->name;
 return $return;
 }
 
+public function getCategory($category)
+{
+  if(!empty($category))
+  {
+    $query=$this->db->query("SELECT `id`, `name`, `category`, `pdf`, `order` FROM `innergizebackend_download` WHERE `category`='$category' ORDER BY `order`")->result();
+  }
+  else {
+  $query=$this->db->query("SELECT `id`, `name`, `description`, `order` FROM `innergizebackend_category` WHERE 1 ORDER BY `order`")->result();
+  }
+  return $query;
+}
 
 public function categorySubmit($name, $department, $email, $phone,$position,$qualification,$resume)
 {

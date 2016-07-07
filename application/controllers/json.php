@@ -146,6 +146,12 @@ $id=$this->input->get_post("id");
 $data["message"]=$this->career_model->getsinglecareer($id);
 $this->load->view("json",$data);
 }
+public function getCategory()
+{
+$category=$this->input->get_post("category");
+$data["message"]=$this->category_model->getCategory($category);
+$this->load->view("json",$data);
+}
 
 public function careersSubmit()
 {
