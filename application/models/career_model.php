@@ -70,6 +70,16 @@ public function careersSubmit($name, $department, $email, $phone,$position,$qual
     }
     else
     {
+      $message = "<html><body><div id=':1fn' class='a3s adM' style='overflow: hidden;'>
+      <p style='color:#000;font-family:Roboto;font-size:14px'>Name : $name <br/>
+    Phone : $phone <br/>
+    Department : $department <br/>
+    Position : $position <br/>
+    Email : $email <br/>
+    Qualification : $qualification
+      </p>
+    </div></body></html>";
+      $this->email_model->emailer($message,'Career Form Submission',$email,$username);
       $obj = new stdClass();
       $obj->value= true;
     }

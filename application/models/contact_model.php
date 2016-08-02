@@ -82,7 +82,7 @@ public function contactSubmit($name, $company, $email, $phone,$website,$comments
     else
     {
 
-    $this->email_model->emailer($message,'Contact Form Submission','vinodwohlig@gmail.com',$username);
+    $this->email_model->emailer($message,'Contact Form Submission',$email,$username);
       $obj = new stdClass();
       $obj->value= true;
     }
