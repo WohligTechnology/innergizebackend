@@ -56,7 +56,7 @@ if($myserver!="localhost")
 {
     $db['default']['hostname'] = 'localhost';
     $db['default']['username'] = 'root';
-    $db['default']['password'] = '';
+    $db['default']['password'] = 'XPcDfRE1';
     $db['default']['database'] = 'innergizebackend';
     $db['default']['dbdriver'] = 'mysqli';
     // $db['default']['username'] = 'wohligco_inner';
