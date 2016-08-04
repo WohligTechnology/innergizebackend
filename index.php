@@ -18,6 +18,8 @@
  * NOTE: If you change these, also change the error_reporting() code below
  *
  */
+ header("Cache-Control: no-cache, must-revalidate");
+ header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 	define('ENVIRONMENT', 'testing');
 /*
  *---------------------------------------------------------------
