@@ -43,8 +43,8 @@ return $query;
 }
 public function getimagebyid($id)
 {
-$query=$this->db->query("SELECT `image` FROM `innergizebackend_contact` WHERE `id`='$id'")->row();
-return $query;
+// $query=$this->db->query("SELECT `image` FROM `innergizebackend_contact` WHERE `id`='$id'")->row();
+// return $query;
 }
 public function getdropdown()
 {
