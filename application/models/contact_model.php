@@ -26,11 +26,11 @@ return $query;
 }
 public function edit($id,$company,$phone,$email,$website,$comments)
 {
-if($image=="")
-{
-$image=$this->contact_model->getimagebyid($id);
-$image=$image->image;
-}
+// if($image=="")
+// {
+// $image=$this->contact_model->getimagebyid($id);
+// $image=$image->image;
+// }
 $data=array("company" => $company,"phone" => $phone,"email" => $email,"website" => $website,"comments" => $comments);
 $this->db->where( "id", $id );
 $query=$this->db->update( "innergizebackend_contact", $data );
