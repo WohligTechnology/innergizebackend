@@ -26,11 +26,11 @@ return $query;
 }
 public function edit($id,$name,$department,$email,$phone,$position,$qualification)
 {
-if($image=="")
-{
-$image=$this->career_model->getimagebyid($id);
-$image=$image->image;
-}
+// if($image=="")
+// {
+// $image=$this->career_model->getimagebyid($id);
+// $image=$image->image;
+// }
 $data=array("name" => $name,"department" => $department,"email" => $email,"phone" => $phone,"position" => $position,"qualification" => $qualification);
 $this->db->where( "id", $id );
 $query=$this->db->update( "innergizebackend_career", $data );
